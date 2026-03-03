@@ -20,7 +20,7 @@ Monitoring Automation<br>
 Playbook (.yml)<br>
 Inventory file<br>
 Execution steps<br>
-Expected output
+
 
 📘 Detailed blog explanation available on Hashnode<br>
 🔗 LinkedIn learning series ongoing
