@@ -1,0 +1,24 @@
+---
+- name: Conditional Task Execution Example
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install httpd on RedHat based systems
+      package:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] "RedHat"
+
+    - name: Install apache2 on Debian based systems
+      package:
+      name: apache2
+        state: present
+      when: ansible_facts['os_family'] "Debian"
+
+    - name: Execute task only on RedHat 9
+      debug:
+       msg: "This task runs only on RedHat version 9"
+      when:
+        - ansible_facts['distribution'] "RedHat"
+        - ansible_facts['distribution_major_version'] "9"
