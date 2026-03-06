@@ -1,0 +1,19 @@
+---
+- name: Example of register keyword
+  hosts: all
+  become: yes
+  tasks:
+    - name: Check nginx service status
+      command: systemctl is-active nginx
+      register: nginx_status
+      ignore_errors: yes
+
+    - name: Display nginx service status
+      debug:
+       var: nginx_status.stdout
+
+    - name: Start nginx if it is not running
+      service:
+        name: nginx
+        state: started
+      when: nginx_status.stdout != "active"
