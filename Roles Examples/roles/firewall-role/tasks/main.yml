@@ -1,0 +1,18 @@
+---
+- name: Ensure firewalld is installed
+  package:
+    name: firewalld
+    state: present
+- name: Ensure firewalld is running
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+- name: Open required ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  loop: "{{ firewall_ports }}"
+  notify: restart firewalld
