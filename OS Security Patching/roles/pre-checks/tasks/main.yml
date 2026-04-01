@@ -1,1 +1,25 @@
 ---
+- name: Gather package facts
+  package_facts:
+    manager: auto
+- name: Check current kernel version
+  command: uname -r
+  register: precheck_kernel
+  changed_when: false
+- name: Check uptime before patching
+  ommand: uptime
+  register: precheck_uptime
+  changed_when: false
+- name: Check disk usage before patching
+  command: df -h /
+  register: precheck_disk
+  changed_when: false
+- name: Display pre-check details
+  debug:
+    msg:
+      - "Hostname: {{ inventory_hostname }}"
+      - "OS Family: {{ ansible_os_family }}"
+      - "Distribution: {{ ansible_distribution }}"
+      - "Kernel Before Patch: {{ precheck_kernel.stdout }}"
+      - "Uptime Before Patch: {{ precheck_uptime.stdout }}"
+      - "Disk Usage Before Patch: {{ precheck_disk.stdout_lines }}"
