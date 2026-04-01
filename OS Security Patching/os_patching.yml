@@ -1,1 +1,10 @@
-
+---
+- name: Role-based OS security patching
+  hosts: linux_servers
+  become: yes
+  gather_facts: yes
+  roles:
+    - pre-check
+    - patch-rhel
+    - patch-ubuntu
+    - post-check
