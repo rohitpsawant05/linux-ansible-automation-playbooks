@@ -1,1 +1,36 @@
-
+--
+- name: Sanity reboot before patching on Ubuntu
+  reboot:
+    msg: "Sanity reboot before applying security patches on Ubuntu"
+    reboot_timeout: 900
+    test_command: whoami
+  when: ansible_os_family == "Debian"
+- name: Update apt cache on Ubuntu
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+- name: Apply security patches on Ubuntu
+  apt:
+    upgrade: safe
+    autoremove: yes
+    autoclean: yes
+  register: ubuntu_patch_result
+  when: ansible_os_family == "Debian"
+- name: Check if reboot is required on Ubuntu
+  stat:
+    path: /var/run/reboot-required
+  register: ubuntu_reboot_required
+  when: ansible_os_family == "Debian"
+- name: Reboot Ubuntu server after patching if required
+  reboot:
+    msg: "Rebooting Ubuntu server after security patching"
+    reboot_timeout: 900
+    test_command: whoami
+  when:
+    - ansible_os_family == "Debian"
+    - ubuntu_reboot_required.stat.exists
+- name: Display Ubuntu patch result
+  debug:
+    var: ubuntu_patch_result
+  when: ansible_os_family == "Debian"
