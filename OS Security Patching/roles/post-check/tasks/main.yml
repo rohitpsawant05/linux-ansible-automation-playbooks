@@ -1,1 +1,22 @@
-
+---
+- name: Check kernel version after patching
+  command: uname -r
+  register: postcheck_kernel
+  changed_when: false
+- name: Check uptime after patching
+  command: uptime
+  register: postcheck_uptime
+  changed_when: false
+- name: Check disk usage after patching
+  command: df -h /
+  register: postcheck_disk
+  changed_when: false
+- name: Verify system is reachable after patching
+  ping:
+- name: Display post-check details
+  debug:
+    msg:
+      - "Hostname: {{ inventory_hostname }}"
+      - "Kernel After Patch: {{ postcheck_kernel.stdout }}"
+      - "Uptime After Patch: {{ postcheck_uptime.stdout }}"
+      - "Disk Usage After Patch: {{ postcheck_disk.stdout_lines }}"
