@@ -22,3 +22,6 @@ os-patching-role-based/
    ├── patch-rhel
    ├── patch-ubuntu
    └── post-check
+
+How to Run
+# ansible-playbook -i inventory/hosts.ini patching.yml
