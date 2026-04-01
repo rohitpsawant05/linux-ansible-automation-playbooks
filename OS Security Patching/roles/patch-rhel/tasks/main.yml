@@ -1,1 +1,33 @@
-
+--
+- name: Sanity reboot before patching on RHEL
+  reboot:
+    msg: "Sanity reboot before applying security patches on RHEL"
+    reboot_timeout: 900
+    test_command: whoami
+  when: ansible_os_family == "RedHat"
+- name: Apply only security patches on RHEL
+  yum:
+   name: '*'
+   security: yes
+   state: latest
+   update_only: yes
+  register: rhel_patch_result
+  when: ansible_os_family == "RedHat"
+- name: Check if reboot is required on RHEL
+  command: needs-restarting -r
+  register: rhel_reboot_check
+  failed_when: false
+  changed_when: false
+  when: ansible_os_family == "RedHat"
+- name: Reboot RHEL server after patching if required
+  reboot:
+    msg: "Rebooting RHEL server after security patching"
+    reboot_timeout: 900
+    test_command: whoami
+  when:
+    - ansible_os_family == "RedHat"
+    - rhel_reboot_check.rc != 0
+- name: Display RHEL patch result
+  debug:
+    var: rhel_patch_result
+  when: ansible_os_family == "RedHat"
